@@ -1,37 +1,35 @@
-# Gelato Relay Integration Guide
+# Gelato Relay Migration Guide
 
-Build gasless transactions with Gelato Relay. This repo covers:
+Gelato is deprecating legacy relay patterns. This repository provides **migration guides and examples** for updating your integration.
 
-- **Meta-Transactions (ERC-2771)** - Users sign, relayers pay gas
-- **ERC-20 Fee Payments** - Users pay fees in tokens (USDC, etc.)
-
-## 🚨 For Existing Customers
-
-Gelato is deprecating legacy patterns. This repo provides migration guides for:
+## 🚨 Migration Required
 
 | Legacy Pattern | New Approach | Migration Guide |
 |----------------|--------------|-----------------|
 | **Old Trusted Forwarder** | New ERC-2771 Forwarder | [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) |
 | **SyncFee / `GelatoRelayContext`** | Direct ERC-20 Transfer | [ERC20_FEE_PAYMENT.md](./ERC20_FEE_PAYMENT.md) |
 
-**Quick Start:** [MIGRATION_QUICK_REFERENCE.md](./MIGRATION_QUICK_REFERENCE.md)
+**Quick Reference:** [MIGRATION_QUICK_REFERENCE.md](./MIGRATION_QUICK_REFERENCE.md)
+
+## What's Changing?
+
+### ERC-2771 Meta-Transactions
+The old trusted forwarder is being replaced with a new ERC-2771 compliant forwarder. Your contracts need to:
+- Update to the new forwarder address
+- Use OpenZeppelin's `ERC2771Context`
+- Sign messages with the new EIP-712 domain
+
+### ERC-20 Fee Payments
+The old `SyncFee` pattern (inheriting `GelatoRelayContext`) is being replaced with a simpler approach:
+- Call Gelato API to get `feeCollector` and `fee`
+- Transfer tokens directly in your contract
+- No contract inheritance required
 
 ## 📋 For New Integrations
 
 Choose your implementation approach:
 - **Trusted Forwarder** - External contract handles signatures ([Jump to](#trusted-forwarder-approach))
 - **Direct Integration** - Your contract handles signatures ([Jump to](#direct-integration-approach))
-
-## 💰 Paying with ERC-20 Tokens
-
-Want users to pay for their own transactions with ERC-20 tokens instead of sponsoring them?
-
-**New method:** Call Gelato API to get `feeCollector` and `fee`, then transfer tokens directly. No contract inheritance needed!
-
-See **[ERC20_FEE_PAYMENT.md](./ERC20_FEE_PAYMENT.md)** for:
-- Complete implementation guide
-- Permit (EIP-2612) for gasless approvals
-- Migration from old `SyncFee` / `GelatoRelayContext` pattern
 
 ---
 
