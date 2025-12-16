@@ -266,11 +266,24 @@ npx ts-node scripts/testERC20FeePayment.ts           # ERC20 fee payment with pe
 
 ### Environment Setup
 
-Create `.env`:
-```env
-GELATO_RELAY_API_KEY=your_api_key
-PRIVATE_KEY=your_private_key
+1. Copy the example environment file:
+```bash
+cp .env-example .env
 ```
+
+2. Fill in your credentials in `.env`:
+```env
+# Required: Your wallet private key for signing transactions
+PRIVATE_KEY=your_private_key_here
+
+# Required: Gelato API key for relay services
+# Get yours at: https://app.gelato.cloud
+GELATO_API_KEY=your_gelato_api_key_here
+
+
+**Where to get these:**
+- **PRIVATE_KEY**: Export from your wallet (MetaMask: Account Details → Export Private Key)
+- **GELATO_API_KEY**: Sign up at [app.gelato.network](https://app.gelato.cloud) and create an API key
 
 ## Project Structure
 
