@@ -1,10 +1,18 @@
-# ERC-2771 Meta-Transaction Implementation for Gelato Relay
+# Gelato Relay Integration Guide
 
-Enable gasless transactions for your smart contracts using EIP-712 signatures and Gelato Relay.
+Build gasless transactions with Gelato Relay. This repo covers:
+
+- **Meta-Transactions (ERC-2771)** - Users sign, relayers pay gas
+- **ERC-20 Fee Payments** - Users pay fees in tokens (USDC, etc.)
 
 ## 🚨 For Existing Customers
 
-**Gelato is deprecating the old forwarder.** See [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) for migration instructions.
+Gelato is deprecating legacy patterns. This repo provides migration guides for:
+
+| Legacy Pattern | New Approach | Migration Guide |
+|----------------|--------------|-----------------|
+| **Old Trusted Forwarder** | New ERC-2771 Forwarder | [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) |
+| **SyncFee / `GelatoRelayContext`** | Direct ERC-20 Transfer | [ERC20_FEE_PAYMENT.md](./ERC20_FEE_PAYMENT.md) |
 
 **Quick Start:** [MIGRATION_QUICK_REFERENCE.md](./MIGRATION_QUICK_REFERENCE.md)
 
@@ -13,6 +21,17 @@ Enable gasless transactions for your smart contracts using EIP-712 signatures an
 Choose your implementation approach:
 - **Trusted Forwarder** - External contract handles signatures ([Jump to](#trusted-forwarder-approach))
 - **Direct Integration** - Your contract handles signatures ([Jump to](#direct-integration-approach))
+
+## 💰 Paying with ERC-20 Tokens
+
+Want users to pay for their own transactions with ERC-20 tokens instead of sponsoring them?
+
+**New method:** Call Gelato API to get `feeCollector` and `fee`, then transfer tokens directly. No contract inheritance needed!
+
+See **[ERC20_FEE_PAYMENT.md](./ERC20_FEE_PAYMENT.md)** for:
+- Complete implementation guide
+- Permit (EIP-2612) for gasless approvals
+- Migration from old `SyncFee` / `GelatoRelayContext` pattern
 
 ---
 
@@ -242,6 +261,7 @@ npx ts-node scripts/testSponsoredCallTrusted.ts
 npx ts-node scripts/testSponsoredCallTrustedConcurrent.ts
 npx ts-node scripts/testSponsoredCall.ts
 npx ts-node scripts/testSponsoredCallHash.ts
+npx ts-node scripts/testERC20FeePayment.ts           # ERC20 fee payment with permit
 ```
 
 ### Environment Setup
@@ -262,22 +282,27 @@ contracts/
 ├── lib/
 │   ├── EIP712MetaTransaction.sol            # Direct Integration - Sequential
 │   └── EIP712HASHMetaTransaction.sol        # Direct Integration - Concurrent
+├── mocks/
+│   └── MockERC20Permit.sol                  # Mock token for testing
 ├── SimpleCounterTrusted.sol                 # Example: Forwarder Sequential
 ├── SimpleCounterTrustedConcurrent.sol       # Example: Forwarder Concurrent
 ├── SimpleCounter.sol                        # Example: Direct Sequential
-└── SimpleCounterHash.sol                    # Example: Direct Concurrent
+├── SimpleCounterHash.sol                    # Example: Direct Concurrent
+└── SimpleCounterERC20Fee.sol                # Example: ERC20 Fee Payment
 
 scripts/
 ├── testSponsoredCallTrusted.ts              # Gelato: Forwarder Sequential
 ├── testSponsoredCallTrustedConcurrent.ts    # Gelato: Forwarder Concurrent
 ├── testSponsoredCall.ts                     # Gelato: Direct Sequential
-└── testSponsoredCallHash.ts                 # Gelato: Direct Concurrent
+├── testSponsoredCallHash.ts                 # Gelato: Direct Concurrent
+└── testERC20FeePayment.ts                   # Gelato: ERC20 Fee with Permit
 
 test/
 ├── SimpleCounterTrusted.ts
 ├── SimpleCounterTrustedConcurrent.ts
 ├── SimpleCounter.ts
-└── SimpleCounterHash.ts
+├── SimpleCounterHash.ts
+└── SimpleCounterERC20Fee.ts                # ERC20 Fee Payment tests
 ```
 
 ---
@@ -286,6 +311,7 @@ test/
 
 - **[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)** - For existing customers migrating from old forwarder
 - **[MIGRATION_QUICK_REFERENCE.md](./MIGRATION_QUICK_REFERENCE.md)** - Quick migration checklist
+- **[ERC20_FEE_PAYMENT.md](./ERC20_FEE_PAYMENT.md)** - Pay for transactions with ERC-20 tokens
 - **README.md** - This file (technical overview)
 
 ---

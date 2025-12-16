@@ -329,7 +329,7 @@ describe("Test SimpleCounterTrusted with TrustedForwarder (ERC-2771)", function 
 
   it("#7: should reject wrong chain ID", async () => {
     const chainId = (await hre.ethers.provider.getNetwork()).chainId;
-    const wrongChainId = 999999n;
+    const wrongChainId = BigInt(999999);
 
     const types = {
       SponsoredCallERC2771: [

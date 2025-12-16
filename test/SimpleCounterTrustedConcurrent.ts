@@ -396,7 +396,7 @@ describe("Test SimpleCounterTrustedConcurrent with TrustedForwarderConcurrentERC
 
   it("#8: should reject wrong chain ID", async () => {
     const chainId = (await hre.ethers.provider.getNetwork()).chainId;
-    const wrongChainId = 999999n;
+    const wrongChainId = BigInt(999999);
 
     const types = {
       SponsoredCallConcurrentERC2771: [

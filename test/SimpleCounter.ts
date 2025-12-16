@@ -59,7 +59,7 @@ describe("Test SimpleCounter Smart Contract", function () {
 
     const nonce = await simpleCounter.getNonce(userAddress);
     const payload = await simpleCounter.increment.populateTransaction();
-    let message = { nonce: parseInt(nonce), from: userAddress, functionSignature: payload.data };
+    let message = { nonce: nonce.toString(), from: userAddress, functionSignature: payload.data };
 
     // Sign the typed data (EIP-712)
     const signature = await user.signTypedData(domainData, types, message);
@@ -101,7 +101,7 @@ describe("Test SimpleCounter Smart Contract", function () {
 
     const nonce = await simpleCounter.getNonce(userAddress);
     const payload = await simpleCounter.increment.populateTransaction();
-    let message = { nonce: parseInt(nonce), from: userAddress, functionSignature: payload.data };
+    let message = { nonce: nonce.toString(), from: userAddress, functionSignature: payload.data };
 
     // Sign the typed data (EIP-712)
     const signature = await user.signTypedData(domainData, types, message);
